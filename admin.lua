@@ -1,15 +1,12 @@
 --[[
 ╔════════════════════════════════════════════════════════════════════════╗
-║  gOb ADMIN SCRIPT - VERSAO FINAL COMPLETA                              ║
+║  SP3CT4T0R_0 ADMIN SCRIPT                                              ║
 ║  Autor: SP3CT4T0R_0 | Imagem: rbxassetid://9779422 | Have fun lol      ║
 ║  Original: Shackluster | Ref2: ilikeices                               ║
 ║  R6 + R15 + Netless + SimRadius + Crosshair 3/4 + Scanner JJS (101)    ║
 ╚════════════════════════════════════════════════════════════════════════╝
 --]]
 
--- ═══════════════════════════════════════════════════════════════════════
--- [1] CONFIGURACOES
--- ═══════════════════════════════════════════════════════════════════════
 local Config = {
     UseNetless         = true,
     UseSimRadius       = true,
@@ -27,15 +24,11 @@ local Config = {
     R15toR6            = true,
     LoadTime           = game:GetService("Players").RespawnTime + 0.5,
     AlignMode          = 2,
-    -- Identidade (salvo pra uso futuro, nao usado em notificacao)
     Nick               = "SP3CT4T0R_0",
     IconeID            = "rbxassetid://9779422",
     Comentario         = "Have fun lol",
 }
 
--- ═══════════════════════════════════════════════════════════════════════
--- [2] SERVICOS
--- ═══════════════════════════════════════════════════════════════════════
 local Players           = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService        = game:GetService("RunService")
@@ -49,9 +42,6 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerGui   = LocalPlayer:WaitForChild("PlayerGui")
 local Camera      = Workspace.CurrentCamera
 
--- ═══════════════════════════════════════════════════════════════════════
--- [3] SOUNDTRACK
--- ═══════════════════════════════════════════════════════════════════════
 local Soundtrack
 pcall(function()
     if not isfile("Server Admin Soundtrack.mp3") then
@@ -64,9 +54,6 @@ pcall(function()
     Soundtrack.Looped  = true
 end)
 
--- ═══════════════════════════════════════════════════════════════════════
--- [4] CONSTANTES
--- ═══════════════════════════════════════════════════════════════════════
 local IT      = Instance.new
 local CF      = CFrame.new
 local VT      = Vector3.new
@@ -86,9 +73,6 @@ local V3_101  = VT(1, 0, 1)
 local V3_0    = VT(0, 0, 0)
 local INF     = math.huge
 
--- ═══════════════════════════════════════════════════════════════════════
--- [5] ESTADOS GLOBAIS
--- ═══════════════════════════════════════════════════════════════════════
 local Animation_Speed = Config.Animation_Speed
 local CHANGE          = 2 / Animation_Speed
 local Speed           = 16
@@ -114,15 +98,11 @@ local NECKC0          = CF(0, 1, 0) * ANGLES(RAD(-90), RAD(0), RAD(180))
 local RIGHTSHOULDERC0 = CF(-0.5, 0, 0) * ANGLES(RAD(0), RAD(90), RAD(0))
 local LEFTSHOULDERC0  = CF(0.5, 0, 0) * ANGLES(RAD(0), RAD(-90), RAD(0))
 
--- Helper pra guardar conexoes
 local function GuardarConexao(con)
     table.insert(Conexoes, con)
     return con
 end
 
--- ═══════════════════════════════════════════════════════════════════════
--- [6] REFERENCIAS SEGURAS
--- ═══════════════════════════════════════════════════════════════════════
 local Character, Humanoid, RootPart, Torso, Head
 local RightArm, LeftArm, RightLeg, LeftLeg
 local RootJoint, Neck, RightShoulder, LeftShoulder, RightHip, LeftHip
@@ -157,9 +137,6 @@ local function AtualizarReferencias(char)
     if Soundtrack and RootPart then Soundtrack.Parent = RootPart end
 end
 
--- ═══════════════════════════════════════════════════════════════════════
--- [7] CONVERSAO R15->R6 + NETLESS + SIMRADIUS
--- ═══════════════════════════════════════════════════════════════════════
 local function gp(parent, name, className)
     if typeof(parent) == "Instance" then
         for _, v in pairs(parent:GetChildren()) do
@@ -213,7 +190,6 @@ local function align(Part0, Part1)
     end
 end
 
--- SimRadius
 local fenv = getfenv()
 if Config.UseSimRadius then
     if Config.SimRadiusModo == "shp" then
@@ -226,7 +202,7 @@ if Config.UseSimRadius then
                     RunService.Heartbeat:Wait()
                 end
             end))
-            print("[gOb] SimRadius ATIVO")
+            print("[SP3CT4T0R_0] SimRadius ATIVO")
         end
     elseif Config.SimRadiusModo == "ssr" then
         local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius
@@ -237,7 +213,7 @@ if Config.UseSimRadius then
                     RunService.Heartbeat:Wait()
                 end
             end))
-            print("[gOb] SimRadius (ssr) ATIVO")
+            print("[SP3CT4T0R_0] SimRadius (ssr) ATIVO")
         end
     end
 end
@@ -248,7 +224,7 @@ local function ConverterR15R6()
     local hum = c:FindFirstChildOfClass("Humanoid")
     if not hum then return end
     if hum.RigType ~= Enum.HumanoidRigType.R15 then return end
-    print("[gOb] Convertendo R15 -> R6...")
+    print("[SP3CT4T0R_0] Convertendo R15 -> R6...")
     local part = gp(c, "HumanoidRootPart", "BasePart") or gp(c, "UpperTorso", "BasePart")
         or gp(c, "LowerTorso", "BasePart") or gp(c, "Head", "BasePart")
         or c:FindFirstChildWhichIsA("BasePart")
@@ -319,7 +295,7 @@ local function ConverterR15R6()
     hum.RigType = Enum.HumanoidRigType.R6
     hum.HipHeight = 0
     AtualizarReferencias(c)
-    print("[gOb] R15->R6 OK!")
+    print("[SP3CT4T0R_0] R15->R6 OK!")
 end
 
 if LocalPlayer.Character then
@@ -337,9 +313,6 @@ GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c)
     if Config.R15toR6 then task.spawn(ConverterR15R6) end
 end))
 
--- ═══════════════════════════════════════════════════════════════════════
--- [8] SCANNER COM PRIORIDADE 101 (JJS) + CATEGORIA FISICA
--- ═══════════════════════════════════════════════════════════════════════
 local JJS_PATTERNS = {
     "hit", "damage", "attack", "stun", "ragdoll",
     "hitbox", "connect", "velocity",
@@ -368,7 +341,6 @@ end
 local function CalcularScore(remote, categoria)
     local nome = string.lower(remote.Name)
     local score = 50
-    -- Prioridade 101: padroes JJS
     for _, p in ipairs(JJS_PATTERNS) do
         if string.find(nome, p, 1, true) then score = 101; break end
     end
@@ -383,7 +355,7 @@ local function CalcularScore(remote, categoria)
 end
 
 local function EscanearRemotes()
-    if Config.LogScanner then print("[gOb Scanner] Iniciando...") end
+    if Config.LogScanner then print("[SP3CT4T0R_0 Scanner] Iniciando...") end
     local locais = { ReplicatedStorage, Workspace, LocalPlayer }
     local pg = LocalPlayer:FindFirstChild("PlayerGui")
     if pg then table.insert(locais, pg) end
@@ -408,14 +380,12 @@ local function EscanearRemotes()
             end
         end
     end
-    -- Ordena DANO por score (maior primeiro)
     table.sort(RemotesEncontrados.DANO, function(a,b) return a.score > b.score end)
     if Config.LogScanner then
-        print(string.format("[gOb Scanner] Total: %d | DANO=%d ANIM=%d FX=%d FIS=%d",
+        print(string.format("[SP3CT4T0R_0 Scanner] Total: %d | DANO=%d ANIM=%d FX=%d FIS=%d",
             total, #RemotesEncontrados.DANO, #RemotesEncontrados.ANIMACAO,
             #RemotesEncontrados.EFEITO, #RemotesEncontrados.FISICA))
-        -- Log top 10 DANO
-        print("[gOb Scanner] TOP 10 DANO:")
+        print("[SP3CT4T0R_0 Scanner] TOP 10 DANO:")
         for i = 1, math.min(10, #RemotesEncontrados.DANO) do
             local e = RemotesEncontrados.DANO[i]
             print(string.format("  [%d] %s (%s)", e.score, e.nome, e.palavra))
@@ -437,23 +407,20 @@ local function FiredRecent(remote, gap)
     return false
 end
 
-local gObServerAdminEvent
+local SP3CT4T0R_0_Event
 do
-    local existing = ReplicatedStorage:FindFirstChild("gObServerAdminEvent")
+    local existing = ReplicatedStorage:FindFirstChild("SP3CT4T0R_0_Event")
     if existing and existing:IsA("RemoteEvent") then
-        gObServerAdminEvent = existing
+        SP3CT4T0R_0_Event = existing
     else
-        gObServerAdminEvent = IT("RemoteEvent")
-        gObServerAdminEvent.Name = "gObServerAdminEvent"
-        gObServerAdminEvent.Parent = ReplicatedStorage
+        SP3CT4T0R_0_Event = IT("RemoteEvent")
+        SP3CT4T0R_0_Event.Name = "SP3CT4T0R_0_Event"
+        SP3CT4T0R_0_Event.Parent = ReplicatedStorage
     end
 end
 
--- ═══════════════════════════════════════════════════════════════════════
--- [9] CROSSHAIR 3/4 PRA CIMA
--- ═══════════════════════════════════════════════════════════════════════
 local ScreenGui = IT("ScreenGui")
-ScreenGui.Name = "gOb_AdminUI"
+ScreenGui.Name = "SP3CT4T0R_0_UI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -497,9 +464,6 @@ end
 updateCrosshairPos()
 GuardarConexao(Camera:GetPropertyChangedSignal("ViewportSize"):Connect(updateCrosshairPos))
 
--- ═══════════════════════════════════════════════════════════════════════
--- [10] CROSSHAIR POSITION / TARGET
--- ═══════════════════════════════════════════════════════════════════════
 local function GetCrosshairPosition()
     local ok, pos = pcall(function()
         local vp = Camera.ViewportSize
@@ -530,16 +494,12 @@ local function GetCrosshairTarget()
     return nil, nil, nil
 end
 
--- ═══════════════════════════════════════════════════════════════════════
--- [11] APPLYAOE GLOBAL (ignora auto-dano + prioridade JJS)
--- ═══════════════════════════════════════════════════════════════════════
 local function ApplyAoE_Global(position, damage, force, ignorarAuto)
     position = position or GetCrosshairPosition()
     damage   = damage or 50
     force    = force or 150
-    ignorarAuto = ignorarAuto ~= false  -- default: true (nao se auto-atinge)
+    ignorarAuto = ignorarAuto ~= false
 
-    -- 1. Dispara só nos top remotes (score alto primeiro)
     local disparados = 0
     for _, entry in ipairs(RemotesEncontrados.DANO) do
         if disparados >= 5 then break end
@@ -552,8 +512,6 @@ local function ApplyAoE_Global(position, damage, force, ignorarAuto)
                         entry.remote:FireServer(damage)
                         task.wait(0.03)
                         entry.remote:FireServer(position, damage)
-                        task.wait(0.03)
-                        entry.remote:FireServer(Character, damage)
                     end
                 end)
             end)
@@ -562,14 +520,12 @@ local function ApplyAoE_Global(position, damage, force, ignorarAuto)
         end
     end
 
-    -- 2. Sincroniza entre clientes
-    if gObServerAdminEvent then
+    if SP3CT4T0R_0_Event then
         pcall(function()
-            gObServerAdminEvent:FireServer("ApplyAoE", {Position = position, Radius = 25, Damage = damage, Force = force})
+            SP3CT4T0R_0_Event:FireServer("ApplyAoE", {Position = position, Radius = 25, Damage = damage, Force = force})
         end)
     end
 
-    -- 3. Fallback local (pula a si mesmo se ignorarAuto)
     for _, desc in ipairs(Workspace:GetDescendants()) do
         if desc:IsA("Humanoid") and desc.Health > 0 then
             local isMe = (desc.Parent == Character)
@@ -584,9 +540,6 @@ local function ApplyAoE_Global(position, damage, force, ignorarAuto)
     end
 end
 
--- ═══════════════════════════════════════════════════════════════════════
--- [12] GOD MODE
--- ═══════════════════════════════════════════════════════════════════════
 local godConn
 local function AtivarGodMode(char)
     if not char then return end
@@ -605,29 +558,17 @@ end
 if LocalPlayer.Character then AtivarGodMode(LocalPlayer.Character) end
 GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c) task.wait(0.3); AtivarGodMode(c) end))
 
--- ═══════════════════════════════════════════════════════════════════════
--- [13] AUTO-DESTRUICAO AO MORRER
--- ═══════════════════════════════════════════════════════════════════════
 local function Autodestruir()
     task.wait(0.3)
     ScriptAtivo = false
-    print("[gOb] Morreu. Autodestruindo script...")
-
-    -- Limpa UIs
+    print("[SP3CT4T0R_0] Morreu. Autodestruindo script...")
     pcall(function() if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end end)
     pcall(function() if PlayerGui:FindFirstChild("Weapon GUI") then PlayerGui["Weapon GUI"]:Destroy() end end)
-
-    -- Limpa efeitos
     pcall(function() if Effects and Effects.Parent then Effects:Destroy() end end)
     for _, s in ipairs(SCREENS) do pcall(function() s:Destroy() end) end
     for _, s in ipairs(SCREENWELDS) do pcall(function() s:Destroy() end) end
-
-    -- Limpa sons
     pcall(function() if Soundtrack and Soundtrack.Parent then Soundtrack:Destroy() end end)
-
-    -- Desconecta tudo
     for _, con in ipairs(Conexoes) do pcall(function() con:Disconnect() end) end
-
     pcall(function() script:Destroy() end)
 end
 
@@ -1003,10 +944,6 @@ local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
                     Swait()
                     if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0-0.04*COS(SINE/24), 0, 0+0.05*COS(SINE/12)) * ANGLES(RAD(0), RAD(0-2.5*COS(SINE/24)), RAD(0)), 1/Animation_Speed) end
                     if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15-7*COS(SINE/12)), RAD(0), RAD(0)), 1/Animation_Speed) end
-                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.3,0.45+0.1*COS(SINE/12),-0.2) * ANGLES(RAD(45),RAD(0),RAD(-15)) * ANGLES(RAD(0),RAD(15),RAD(0)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-44-1.5*COS(SINE/12)),RAD(0),RAD(45)) * ANGLES(RAD(0),RAD(-25),RAD(0)) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                    if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1+0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(85),RAD(0)) * ANGLES(RAD(-2-2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1-0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(-85),RAD(0)) * ANGLES(RAD(-2+2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
                 end
             elseif WaitTillFinished == true then
                 repeat
@@ -1036,7 +973,6 @@ local function IntroThing()
     ATTACK = true
     Rooted = true
 
-    -- FASE 1: Personagem FANTASMA
     local partesParaRestaurar = {}
     if Character then
         for _, part in ipairs(Character:GetDescendants()) do
@@ -1064,7 +1000,6 @@ local function IntroThing()
         jaCaiu = true
         if conexao then conexao:Disconnect() end
 
-        -- Restaura visibilidade
         if RootPart then RootPart.Anchored = false end
         for _, entry in ipairs(partesParaRestaurar) do
             if entry.part and entry.part.Parent then
@@ -1200,8 +1135,6 @@ end
 -- ═══════════════════════════════════════════════════════════════════════
 -- [20] SKILLS
 -- ═══════════════════════════════════════════════════════════════════════
-
--- ;Fling (nao te afeta + reset de velocidade)
 local Fling = function()
     ATTACK = true
     Rooted = false
@@ -1217,7 +1150,6 @@ local Fling = function()
             Size = 4, Distance = 75, Material = HITFLOOR.Material, Scatter = 1, Amount = MRANDOM(75,85), DebreeCount = 8})
     end
 
-    -- ignorarAuto = true (nao se auto-atinge)
     ApplyAoE_Global(RootPart.Position - VT(0,4,0), 100, 550, true)
 
     WACKYEFFECT({Time = 35, EffectType = "Sphere", Size = VT(0,0,0), Size2 = VT(150,150,150),
@@ -1226,7 +1158,6 @@ local Fling = function()
         SoundID = 610359590, SoundPitch = 1, SoundVolume = 6,
         UseBoomerangMath = true, SizeBoomerang = 5})
 
-    -- Anti-auto-fling
     task.spawn(function()
         task.wait(0.15)
         if RootPart and RootPart.Parent then
@@ -1238,7 +1169,6 @@ local Fling = function()
     end)
 end
 
--- ;TpTo
 local TpTo = function()
     ATTACK = true
     Rooted = true
@@ -1271,7 +1201,6 @@ local TpTo = function()
     Rooted = false
 end
 
--- ;Hurl (pedras 1-6 studs + dano escalado + nao te afeta)
 local Hurl = function()
     ATTACK = true
     Rooted = false
@@ -1296,7 +1225,6 @@ local Hurl = function()
             (CF(RootPart.Position, RootPart.Position + VT(0,-1,0))).lookVector, 4, Character)
         if HITFLOOR then
             task.spawn(function()
-                -- Tamanho perceptivel: 1.0 a 6.0 studs
                 local tam = MRANDOM(10, 60) / 10
                 local B = CreatePart(3, Effects, HITFLOOR.Material, 0, 0, BRICKC("Cyan"), "Debree",
                     VT(1,1,1) * tam, true)
@@ -1354,7 +1282,6 @@ local Hurl = function()
                         if HIT then
                             KILLED = true
                             CreateSound(174580476, ROCK, 2, 1.6, false)
-                            -- Dano escalado: 20 * (tamanho / 5)
                             local dano = 20 * (ROCK.Size.Z / 5)
                             ApplyAoE_Global(ROCK.Position, dano, 12, true)
                             Debree({Delay = 0.8, Variant = "Loose", Location = ROCK.Position, Color = ROCK.Color,
@@ -1385,7 +1312,6 @@ local Hurl = function()
     Rooted = false
 end
 
--- ;Kill
 local Kill = function()
     local TARGET, HITPOS = GetCrosshairTarget()
     if not TARGET then return end
@@ -1428,7 +1354,7 @@ local Kill = function()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [21] UI DE SKILLS (centro-direito + 1.5x + sem [—]/[X])
+-- [21] UI DE SKILLS (centro-direito + 1.5x)
 -- ═══════════════════════════════════════════════════════════════════════
 local WEAPONGUI = IT("ScreenGui", PlayerGui)
 WEAPONGUI.Name = "Weapon GUI"
@@ -1455,7 +1381,6 @@ local ATTACKS = {
 local GUIS = {}
 local SkillFrames = {}
 
--- Posicao: centro-direito (ancora no meio-direito)
 for i = 1, #ATTACKS do
     local SKILLFRAME = CreateFrame(WEAPONGUI, 0.8, 2,
         UD2(1-(0.45*(SIZE/5)), 0, 0.5 + ((0.09*(SIZE/5))*(i-1)) - (0.09*(SIZE/5)*#ATTACKS/2), 0),
@@ -1478,7 +1403,6 @@ for i = 1, #ATTACKS do
     table.insert(GUIS, SKILLTEXT)
 end
 
--- Touch/click na linha executa
 for _, entry in ipairs(SkillFrames) do
     entry.frame.Active = true
     local ultimoClick = 0
@@ -1550,7 +1474,6 @@ GuardarConexao(task.spawn(function()
                 (CF(RootPart.Position, RootPart.Position + VT(0,-1,0))).lookVector, 4, Character)
             local WSV = 8 / (Humanoid.WalkSpeed / 16)
 
-            -- C1 do Walk
             if ANIM == "Walk" and TORSO_VEL > 1 and RootJoint and Neck and RightHip and LeftHip then
                 RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0.1*COS(SINE/(WSV/2))) * ANGLES(RAD(0),RAD(0),RAD(0)), 2*(Humanoid.WalkSpeed/16)/Animation_Speed)
                 Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed)
@@ -1563,7 +1486,6 @@ GuardarConexao(task.spawn(function()
                 if LeftHip then LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,1,0) * ANGLES(RAD(0),RAD(-90),RAD(0)), 0.7/Animation_Speed) end
             end
 
-            -- Detecta estado
             if ATTACK == false then
                 if TORSO_Y > 1 and HITFLOOR == nil then
                     ANIM = "Jump"
@@ -1598,7 +1520,6 @@ GuardarConexao(task.spawn(function()
                 end
             end
 
-            -- Unanchor
             for _, c in pairs(Character:GetChildren()) do
                 if c:IsA("BasePart") and c ~= RootPart then c.Anchored = false end
             end
@@ -1616,7 +1537,6 @@ GuardarConexao(task.spawn(function()
                 task.spawn(IntroThing)
             end
 
-            -- Controle das telas (SC)
             if #SCREENWELDS > 0 then
                 if SC == true then
                     if MRANDOM(1,75) == 1 and not MOVINGSCREENS then
@@ -1658,7 +1578,6 @@ GuardarConexao(task.spawn(function()
                 end
             end
 
-            -- HUD / Antivirus fake
             if #GUISTEXT > 0 then
                 local dt = workspace.DistributedGameTime
                 local S = math.floor(dt) % 60
@@ -1718,12 +1637,12 @@ if not INTRO and Character and Character.Parent and Humanoid and Humanoid.Health
     task.spawn(IntroThing)
 end
 
-print("[SP3CT4T0R_0 Admin] Script carregado! ("..Config.Nick.." - "..Config.Comentario..")")
-print("[SP3CT4T0R_0 Admin] Scanner: "..#RemotesEncontrados.DANO.." DANO | "..#RemotesEncontrados.ANIMACAO.." ANIM | "..#RemotesEncontrados.EFEITO.." FX | "..#RemotesEncontrados.FISICA.." FIS")
-print("[SP3CT4T0R_0 Admin] Controles: Z=Fling | X=TpTo | C=Hurl | V=Kill | M=SC | G=God")
-
---[[
-═══════════════════════════════════════════════════════════════════════
- FIM DO SCRIPT
-═══════════════════════════════════════════════════════════════════════
---]]
+print("[SP3CT4T0R_0] =====================================")
+print("[SP3CT4T0R_0] Script carregado! ("..Config.Nick.." - "..Config.Comentario..")")
+print("[SP3CT4T0R_0] God Mode: "..(Config.GodModeAtivo and "ON" or "OFF"))
+print("[SP3CT4T0R_0] SimRadius: "..(Config.UseSimRadius and "ATIVO" or "OFF"))
+print("[SP3CT4T0R_0] Netless: "..(Config.UseNetless and "ATIVO" or "OFF"))
+print("[SP3CT4T0R_0] Scanner: "..#RemotesEncontrados.DANO.." DANO | "..#RemotesEncontrados.ANIMACAO.." ANIM | "..#RemotesEncontrados.EFEITO.." FX | "..#RemotesEncontrados.FISICA.." FIS")
+print("[SP3CT4T0R_0] Crosshair 3/4 + UI centro-direito 1.5x + Auto-destruicao ON")
+print("[SP3CT4T0R_0] Controles: Z=Fling | X=TpTo | C=Hurl | V=Kill | M=SC | G=God")
+print("[SP3CT4T0R_0] =====================================")
