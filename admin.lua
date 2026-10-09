@@ -88,14 +88,13 @@ local LEFTSHOULDERC0  = CF(0.5, 0, 0) * ANGLES(RAD(0), RAD(-90), RAD(0))
 -- ═══════════════════════════════════════════════════════════════════════
 -- LOOP PRINCIPAL (animacao robusta com MoveDirection + FloorMaterial)
 -- ═══════════════════════════════════════════════════════════════════════
-GuardarConexao(task.spawn(function()
+task.spawn(function()
     while ScriptAtivo do
         Swait()
         SINE = SINE + CHANGE
         if not Character or not Character.Parent or not Humanoid or Humanoid.Health <= 0 then
             task.wait(0.5)
-            continue
-        end
+        else
 
         if ANIMATE and ANIMATE.Parent then ANIMATE.Parent = nil end
         if ANIMATOR then
