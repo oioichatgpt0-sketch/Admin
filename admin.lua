@@ -1,31 +1,23 @@
 --[[
 ╔════════════════════════════════════════════════════════════════════════╗
-║  SP3CT4T0R_0 ADMIN SCRIPT                                              ║
-║  Autor: SP3CT4T0R_0 | Imagem: rbxassetid://9779422 | Have fun lol      ║
-║  Original: Shackluster | Ref2: ilikeices                               ║
+║  SP3CT4T0R_0 ADMIN - VERSAO LIMPA (só o que funciona)                  ║
+║  God + Anti-Fling + R15->R6 + Crosshair + Intro + Skills visuais       ║
 ╚════════════════════════════════════════════════════════════════════════╝
 --]]
 
 local Config = {
-    UseNetless         = true,
-    UseSimRadius       = true,
-    SimRadiusModo      = "shp",
-    SimRadiusValor     = 1e9,
-    NetlessY           = 25.1,
-    CrosshairSize      = 20,
-    CrosshairThick     = 2,
-    CrosshairAltura    = 0.25,
-    GodModeAtivo       = true,
-    Frame_Speed        = 1/60,
-    Animation_Speed    = 3,
-    DebounceSkill      = 0.5,
-    LogScanner         = true,
-    R15toR6            = true,
-    LoadTime           = game:GetService("Players").RespawnTime + 0.5,
-    AlignMode          = 2,
-    Nick               = "SP3CT4T0R_0",
-    IconeID            = "rbxassetid://9779422",
-    Comentario         = "Have fun lol",
+    GodModeAtivo      = true,
+    AntiFlingAtivo    = true,
+    CrosshairSize     = 20,
+    CrosshairThick    = 2,
+    CrosshairAltura   = 0.25,
+    Frame_Speed       = 1/60,
+    Animation_Speed   = 3,
+    DebounceSkill     = 0.5,
+    R15toR6           = true,
+    AntiFlingVelMax   = 150,
+    AntiFlingAngMax   = 50,
+    Nick              = "SP3CT4T0R_0",
 }
 
 local Players           = game:GetService("Players")
@@ -68,9 +60,6 @@ local ASIN    = math.asin
 local ABS     = math.abs
 local MRANDOM = math.random
 local FLOOR   = math.floor
-local V3_101  = VT(1, 0, 1)
-local V3_0    = VT(0, 0, 0)
-local INF     = math.huge
 
 local Animation_Speed = Config.Animation_Speed
 local CHANGE          = 2 / Animation_Speed
@@ -79,7 +68,6 @@ local SINE            = 0
 local ATTACK          = false
 local Rooted          = false
 local ANIM            = "Idle"
-local KEYHOLD         = false
 local SC              = false
 local LITTLEIDLE      = false
 local INTRO           = false
@@ -102,6 +90,9 @@ local function GuardarConexao(con)
     return con
 end
 
+-- ═══════════════════════════════════════════════════════════════════════
+-- REFERENCIAS
+-- ═══════════════════════════════════════════════════════════════════════
 local Character, Humanoid, RootPart, Torso, Head
 local RightArm, LeftArm, RightLeg, LeftLeg
 local RootJoint, Neck, RightShoulder, LeftShoulder, RightHip, LeftHip
@@ -136,6 +127,9 @@ local function AtualizarReferencias(char)
     if Soundtrack and RootPart then Soundtrack.Parent = RootPart end
 end
 
+-- ═══════════════════════════════════════════════════════════════════════
+-- R15 -> R6
+-- ═══════════════════════════════════════════════════════════════════════
 local function gp(parent, name, className)
     if typeof(parent) == "Instance" then
         for _, v in pairs(parent:GetChildren()) do
@@ -145,85 +139,12 @@ local function gp(parent, name, className)
     return nil
 end
 
-local function getNetlessVelocity(realVel)
-    local nv = realVel * V3_101
-    local mag = nv.Magnitude
-    if mag > 0.1 then nv = (100 / mag) * nv end
-    return VT(0, Config.NetlessY, 0) + nv
-end
-
-local function align(Part0, Part1)
-    Part0.CustomPhysicalProperties = PhysicalProperties.new(0.0001, 0.0001, 0.0001, 0.0001, 0.0001)
-    local att0 = IT("Attachment", Part0)
-    att0.Orientation = V3_0; att0.Position = V3_0; att0.Name = "att0_" .. Part0.Name
-    local att1 = IT("Attachment", Part1)
-    att1.Orientation = V3_0; att1.Position = V3_0; att1.Name = "att1_" .. Part1.Name
-    if Config.AlignMode == 1 or Config.AlignMode == 2 then
-        local ape = IT("AlignPosition", att0)
-        ape.ApplyAtCenterOfMass = false; ape.MaxForce = INF; ape.MaxVelocity = INF
-        ape.ReactionForceEnabled = false; ape.Responsiveness = 200
-        ape.Attachment1 = att1; ape.Attachment0 = att0
-        ape.Name = "AlignPositionRtrue"; ape.RigidityEnabled = true
-    end
-    if Config.AlignMode == 2 or Config.AlignMode == 3 then
-        local apd = IT("AlignPosition", att0)
-        apd.ApplyAtCenterOfMass = false; apd.MaxForce = INF; apd.MaxVelocity = INF
-        apd.ReactionForceEnabled = false; apd.Responsiveness = 200
-        apd.Attachment1 = att1; apd.Attachment0 = att0
-        apd.Name = "AlignPositionRfalse"; apd.RigidityEnabled = false
-    end
-    local ao = IT("AlignOrientation", att0)
-    ao.MaxAngularVelocity = INF; ao.MaxTorque = INF; ao.PrimaryAxisOnly = false
-    ao.ReactionTorqueEnabled = false; ao.Responsiveness = 200
-    ao.Attachment1 = att1; ao.Attachment0 = att0; ao.RigidityEnabled = false
-    if Config.UseNetless then
-        local realVelocity = V3_0
-        local stepCon = RunService.Stepped:Connect(function() Part0.Velocity = realVelocity end)
-        local hbCon = RunService.Heartbeat:Connect(function()
-            realVelocity = Part0.Velocity
-            Part0.Velocity = getNetlessVelocity(realVelocity)
-        end)
-        Part0.Destroying:Connect(function()
-            stepCon:Disconnect(); hbCon:Disconnect()
-        end)
-    end
-end
-
-local fenv = getfenv()
-if Config.UseSimRadius then
-    if Config.SimRadiusModo == "shp" then
-        local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
-        if shp then
-            GuardarConexao(task.spawn(function()
-                while ScriptAtivo and LocalPlayer and LocalPlayer.Parent do
-                    pcall(function() shp(LocalPlayer, "SimulationRadius", Config.SimRadiusValor) end)
-                    pcall(function() shp(LocalPlayer, "MaximumSimulationRadius", Config.SimRadiusValor) end)
-                    RunService.Heartbeat:Wait()
-                end
-            end))
-            print("[SP3CT4T0R_0] SimRadius ATIVO")
-        end
-    elseif Config.SimRadiusModo == "ssr" then
-        local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius
-        if ssr then
-            GuardarConexao(task.spawn(function()
-                while ScriptAtivo and LocalPlayer and LocalPlayer.Parent do
-                    pcall(function() ssr(Config.SimRadiusValor) end)
-                    RunService.Heartbeat:Wait()
-                end
-            end))
-            print("[SP3CT4T0R_0] SimRadius (ssr) ATIVO")
-        end
-    end
-end
-
 local function ConverterR15R6()
     local c = LocalPlayer.Character
     if not c or not c.Parent then return end
     local hum = c:FindFirstChildOfClass("Humanoid")
     if not hum then return end
     if hum.RigType ~= Enum.HumanoidRigType.R15 then return end
-    print("[SP3CT4T0R_0] Convertendo R15 -> R6...")
     local part = gp(c, "HumanoidRootPart", "BasePart") or gp(c, "UpperTorso", "BasePart")
         or gp(c, "LowerTorso", "BasePart") or gp(c, "Head", "BasePart")
         or c:FindFirstChildWhichIsA("BasePart")
@@ -294,7 +215,6 @@ local function ConverterR15R6()
     hum.RigType = Enum.HumanoidRigType.R6
     hum.HipHeight = 0
     AtualizarReferencias(c)
-    print("[SP3CT4T0R_0] R15->R6 OK!")
 end
 
 if LocalPlayer.Character then
@@ -312,112 +232,9 @@ GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c)
     if Config.R15toR6 then task.spawn(ConverterR15R6) end
 end))
 
-local JJS_PATTERNS = {
-    "hit", "damage", "attack", "stun", "ragdoll",
-    "hitbox", "connect", "velocity",
-    "destroy", "break", "terrain", "debris",
-    "combat", "melee", "m1", "skill", "move",
-    "re_", "rem_", "event_", "action_",
-}
-
-local ScannerPalavras = {
-    DANO     = { "damage","hit","attack","hurt","kill","combat","punch","slash","shoot","bullet","deal","inflict","apply","take","pvp" },
-    ANIMACAO = { "anim","animation","emote","pose","movement","playanim","action","motion","gesture","dance","idle","swing" },
-    EFEITO   = { "effect","visual","vfx","particle","beam","aura","glow","trail","screen","panel","hud","display","render","fx","glitch" },
-    FISICA   = { "part","partdestroyed","physics","spawn","create","clone","instance","mesh","model","obj","object" },
-}
-
-local RemotesEncontrados = { DANO = {}, ANIMACAO = {}, EFEITO = {}, FISICA = {} }
-
-local function ContemPalavra(nome, lista)
-    local lower = string.lower(nome)
-    for _, p in ipairs(lista) do
-        if string.find(lower, p, 1, true) then return true, p end
-    end
-    return false, nil
-end
-
-local function CalcularScore(remote, categoria)
-    local nome = string.lower(remote.Name)
-    local score = 50
-    for _, p in ipairs(JJS_PATTERNS) do
-        if string.find(nome, p, 1, true) then score = 101; break end
-    end
-    if score == 50 then
-        if string.find(nome, "deal_damage") then score = 100
-        elseif string.find(nome, "takedamage") then score = 95
-        elseif string.find(nome, "attack") then score = 90
-        elseif string.find(nome, "damage") then score = 85
-        elseif string.find(nome, "hit") then score = 80 end
-    end
-    return score
-end
-
-local function EscanearRemotes()
-    if Config.LogScanner then print("[SP3CT4T0R_0 Scanner] Iniciando...") end
-    local locais = { ReplicatedStorage, Workspace, LocalPlayer }
-    local pg = LocalPlayer:FindFirstChild("PlayerGui")
-    if pg then table.insert(locais, pg) end
-    local total = 0
-    for _, l in ipairs(locais) do
-        if l then
-            for _, obj in ipairs(l:GetDescendants()) do
-                if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") or obj:IsA("UnreliableRemoteEvent") then
-                    total = total + 1
-                    for cat, palavras in pairs(ScannerPalavras) do
-                        local bateu, p = ContemPalavra(obj.Name, palavras)
-                        if bateu then
-                            table.insert(RemotesEncontrados[cat], {
-                                remote = obj, nome = obj:GetFullName(),
-                                palavra = p, classe = obj.ClassName,
-                                score = CalcularScore(obj, cat),
-                            })
-                            break
-                        end
-                    end
-                end
-            end
-        end
-    end
-    table.sort(RemotesEncontrados.DANO, function(a,b) return a.score > b.score end)
-    if Config.LogScanner then
-        print(string.format("[SP3CT4T0R_0 Scanner] Total: %d | DANO=%d ANIM=%d FX=%d FIS=%d",
-            total, #RemotesEncontrados.DANO, #RemotesEncontrados.ANIMACAO,
-            #RemotesEncontrados.EFEITO, #RemotesEncontrados.FISICA))
-        print("[SP3CT4T0R_0 Scanner] TOP 10 DANO:")
-        for i = 1, math.min(10, #RemotesEncontrados.DANO) do
-            local e = RemotesEncontrados.DANO[i]
-            print(string.format("  [%d] %s (%s)", e.score, e.nome, e.palavra))
-        end
-    end
-end
-
-GuardarConexao(task.spawn(function()
-    task.wait(2)
-    EscanearRemotes()
-end))
-
-local ultimoFire = {}
-local function FiredRecent(remote, gap)
-    gap = gap or 0.1
-    local agora = tick()
-    if ultimoFire[remote] and agora - ultimoFire[remote] < gap then return true end
-    ultimoFire[remote] = agora
-    return false
-end
-
-local SP3CT4T0R_0_Event
-do
-    local existing = ReplicatedStorage:FindFirstChild("SP3CT4T0R_0_Event")
-    if existing and existing:IsA("RemoteEvent") then
-        SP3CT4T0R_0_Event = existing
-    else
-        SP3CT4T0R_0_Event = IT("RemoteEvent")
-        SP3CT4T0R_0_Event.Name = "SP3CT4T0R_0_Event"
-        SP3CT4T0R_0_Event.Parent = ReplicatedStorage
-    end
-end
-
+-- ═══════════════════════════════════════════════════════════════════════
+-- CROSSHAIR 3/4
+-- ═══════════════════════════════════════════════════════════════════════
 local ScreenGui = IT("ScreenGui")
 ScreenGui.Name = "SP3CT4T0R_0_UI"
 ScreenGui.ResetOnSpawn = false
@@ -493,74 +310,66 @@ local function GetCrosshairTarget()
     return nil, nil, nil
 end
 
-local function ApplyAoE_Global(position, damage, force, ignorarAuto)
-    position = position or GetCrosshairPosition()
-    damage   = damage or 50
-    force    = force or 150
-    ignorarAuto = ignorarAuto ~= false
-
-    local disparados = 0
-    for _, entry in ipairs(RemotesEncontrados.DANO) do
-        if disparados >= 5 then break end
-        if entry.score >= 80 and not FiredRecent(entry.remote, 0.1) then
-            task.spawn(function()
-                pcall(function()
-                    if entry.classe == "RemoteFunction" then
-                        entry.remote:InvokeServer(damage)
-                    else
-                        entry.remote:FireServer(damage)
-                        task.wait(0.03)
-                        entry.remote:FireServer(position, damage)
-                    end
-                end)
-            end)
-            disparados = disparados + 1
-            task.wait(0.05)
-        end
-    end
-
-    if SP3CT4T0R_0_Event then
-        pcall(function()
-            SP3CT4T0R_0_Event:FireServer("ApplyAoE", {Position = position, Radius = 25, Damage = damage, Force = force})
-        end)
-    end
-
-    for _, desc in ipairs(Workspace:GetDescendants()) do
-        if desc:IsA("Humanoid") and desc.Health > 0 then
-            local isMe = (desc.Parent == Character)
-            if not (ignorarAuto and isMe) then
-                local root = desc.Parent and (desc.Parent:FindFirstChild("HumanoidRootPart") or desc.Parent:FindFirstChild("Torso"))
-                if root and (root.Position - position).Magnitude <= 25 then
-                    pcall(function() desc:TakeDamage(damage) end)
-                    pcall(function() root.AssemblyLinearVelocity = (root.Position - position).Unit * force end)
-                end
-            end
-        end
-    end
-end
-
+-- ═══════════════════════════════════════════════════════════════════════
+-- GOD MODE + ANTI-FLING
+-- ═══════════════════════════════════════════════════════════════════════
 local godConn
-local function AtivarGodMode(char)
+local antiFlingConn
+
+local function AplicarProtecoes(char)
     if not char then return end
     local hum = char:FindFirstChildOfClass("Humanoid")
-    if not hum then return end
-    hum.MaxHealth = 9e9
-    hum.Health    = 9e9
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not hum or not root then return end
+
     if godConn then godConn:Disconnect() end
+    if antiFlingConn then antiFlingConn:Disconnect() end
+
+    hum.MaxHealth = math.huge
+    hum.Health = math.huge
+
     godConn = GuardarConexao(RunService.RenderStepped:Connect(function()
-        if Config.GodModeAtivo and hum and hum.Parent and hum.Health > 0 and hum.Health < hum.MaxHealth then
-            hum.Health = hum.MaxHealth
+        if Config.GodModeAtivo and hum and hum.Parent and hum.Health > 0 then
+            if hum.Health < hum.MaxHealth then hum.Health = hum.MaxHealth end
         end
+    end))
+
+    hum.Died:Connect(function()
+        if Config.GodModeAtivo then
+            task.wait(0.1)
+            if hum and hum.Parent then hum.Health = hum.MaxHealth end
+        end
+    end)
+
+    antiFlingConn = GuardarConexao(RunService.Heartbeat:Connect(function()
+        if not Config.AntiFlingAtivo then return end
+        if not root or not root.Parent then return end
+        pcall(function()
+            local vel = root.AssemblyLinearVelocity
+            local ang = root.AssemblyAngularVelocity
+            if vel.Magnitude > Config.AntiFlingVelMax then
+                root.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            end
+            if ang.Magnitude > Config.AntiFlingAngMax then
+                root.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+            end
+        end)
     end))
 end
 
-if LocalPlayer.Character then AtivarGodMode(LocalPlayer.Character) end
-GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c) task.wait(0.3); AtivarGodMode(c) end))
+if LocalPlayer.Character then AplicarProtecoes(LocalPlayer.Character) end
+GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c)
+    task.wait(0.3)
+    AplicarProtecoes(c)
+end))
 
+-- ═══════════════════════════════════════════════════════════════════════
+-- AUTO-DESTRUICAO
+-- ═══════════════════════════════════════════════════════════════════════
 local function Autodestruir()
     task.wait(0.3)
     ScriptAtivo = false
-    print("[SP3CT4T0R_0] Morreu. Autodestruindo script...")
+    print("[SP3CT4T0R_0] Morreu. Autodestruindo...")
     pcall(function() if ScreenGui and ScreenGui.Parent then ScreenGui:Destroy() end end)
     pcall(function() if PlayerGui:FindFirstChild("Weapon GUI") then PlayerGui["Weapon GUI"]:Destroy() end end)
     pcall(function() if Effects and Effects.Parent then Effects:Destroy() end end)
@@ -585,7 +394,7 @@ GuardarConexao(LocalPlayer.CharacterAdded:Connect(function(c)
 end))
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [14] ARTIFICIAL HEARTBEAT
+-- ARTIFICIAL HEARTBEAT
 -- ═══════════════════════════════════════════════════════════════════════
 local ArtificialHB = IT("BindableEvent", script)
 ArtificialHB.Name = "ArtificialHB"
@@ -616,7 +425,7 @@ local function Swait(n)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [15] FUNCOES UTILITARIAS
+-- FUNCOES UTILITARIAS
 -- ═══════════════════════════════════════════════════════════════════════
 local function Raycast(POS, DIR, RANGE, IGNORE)
     local params = RaycastParams.new()
@@ -780,7 +589,7 @@ local function Clerp(a, b, t)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [16] WACKYEFFECT
+-- WACKYEFFECT
 -- ═══════════════════════════════════════════════════════════════════════
 local function WACKYEFFECT(Table)
     local TYPE            = Table.EffectType or "Sphere"
@@ -862,7 +671,7 @@ local function WACKYEFFECT(Table)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [17] DEBREE
+-- DEBREE
 -- ═══════════════════════════════════════════════════════════════════════
 local function Debree(Table)
     local KindOf     = Table.Variant or "Ring"
@@ -921,7 +730,7 @@ local function Debree(Table)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [18] SCREENING
+-- SCREENING
 -- ═══════════════════════════════════════════════════════════════════════
 local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
     local ok, err = pcall(function()
@@ -943,6 +752,10 @@ local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
                     Swait()
                     if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0-0.04*COS(SINE/24), 0, 0+0.05*COS(SINE/12)) * ANGLES(RAD(0), RAD(0-2.5*COS(SINE/24)), RAD(0)), 1/Animation_Speed) end
                     if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15-7*COS(SINE/12)), RAD(0), RAD(0)), 1/Animation_Speed) end
+                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.3,0.45+0.1*COS(SINE/12),-0.2) * ANGLES(RAD(45),RAD(0),RAD(-15)) * ANGLES(RAD(0),RAD(15),RAD(0)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-44-1.5*COS(SINE/12)),RAD(0),RAD(45)) * ANGLES(RAD(0),RAD(-25),RAD(0)) * LEFTSHOULDERC0, 1/Animation_Speed) end
+                    if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1+0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(85),RAD(0)) * ANGLES(RAD(-2-2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
+                    if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1-0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(-85),RAD(0)) * ANGLES(RAD(-2+2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
                 end
             elseif WaitTillFinished == true then
                 repeat
@@ -966,12 +779,13 @@ local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [19] INTROTHING (invisivel + voa + cai com input)
+-- INTRO (com fix de oculos: 0.6 studs a frente da cabeca)
 -- ═══════════════════════════════════════════════════════════════════════
 local function IntroThing()
     ATTACK = true
     Rooted = true
 
+    -- Personagem invisivel + ancora + voa
     local partesParaRestaurar = {}
     if Character then
         for _, part in ipairs(Character:GetDescendants()) do
@@ -1055,6 +869,7 @@ local function IntroThing()
                 if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(45),RAD(0),RAD(-45)), 1/Animation_Speed) end
             end
 
+            -- ═══ FIX: Oculos 0.6 studs a frente da cabeca (nao entra mais) ═══
             local GLASSES = CreatePart(3, Character, "Fabric", 0, 0, BRICKC("Pearl"), "Glasses", VT(0,0,0), false)
             CreateMesh("SpecialMesh", GLASSES, "FileMesh", "1577360", "1577349", VT(1,1.3,1), VT(0,0,0))
             local HELDWELD = CreateWeldOrSnapOrMotor("Weld", RightArm, RightArm, GLASSES, CF(0,-1.4,0) * ANGLES(RAD(90),RAD(0),RAD(180)), CF(0,0,0))
@@ -1068,7 +883,8 @@ local function IntroThing()
 
             HELDWELD.Part0 = Head
             HELDWELD.Parent = Head
-            HELDWELD.C0 = CF(0,0.1,-0.15)
+            -- FIX: -0.6 (a frente), 0.05 (levemente acima)
+            HELDWELD.C0 = CF(0, 0.05, -0.6)
             HELDWELD.C1 = CF(0,0,0)
 
             for i = 1, 3 do
@@ -1132,7 +948,7 @@ local function IntroThing()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [20] SKILLS
+-- SKILLS (visuais)
 -- ═══════════════════════════════════════════════════════════════════════
 local Fling = function()
     ATTACK = true
@@ -1149,23 +965,14 @@ local Fling = function()
             Size = 4, Distance = 75, Material = HITFLOOR.Material, Scatter = 1, Amount = MRANDOM(75,85), DebreeCount = 8})
     end
 
-    ApplyAoE_Global(RootPart.Position - VT(0,4,0), 100, 550, true)
-
     WACKYEFFECT({Time = 35, EffectType = "Sphere", Size = VT(0,0,0), Size2 = VT(150,150,150),
         Transparency = 0.75, Transparency2 = 1, CFrame = CF(RootPart.Position),
         Material = "Neon", Color = C3(1,1,1),
         SoundID = 610359590, SoundPitch = 1, SoundVolume = 6,
         UseBoomerangMath = true, SizeBoomerang = 5})
 
-    task.spawn(function()
-        task.wait(0.15)
-        if RootPart and RootPart.Parent then
-            pcall(function()
-                RootPart.AssemblyLinearVelocity = VT(0, 0, 0)
-                RootPart.AssemblyAngularVelocity = VT(0, 0, 0)
-            end)
-        end
-    end)
+    task.wait(0.5)
+    ATTACK = false
 end
 
 local TpTo = function()
@@ -1277,12 +1084,10 @@ local Hurl = function()
                     Swait()
                     for j = 1, 4 do
                         ROCK.CFrame = ROCK.CFrame * CF(0,0,-ROCK.Size.Z/2)
-                        local HIT, POS = Raycast(ROCK.Position, ROCK.CFrame.lookVector, ROCK.Size.Z/1.5, Character)
+                        local HIT = Raycast(ROCK.Position, ROCK.CFrame.lookVector, ROCK.Size.Z/1.5, Character)
                         if HIT then
                             KILLED = true
                             CreateSound(174580476, ROCK, 2, 1.6, false)
-                            local dano = 20 * (ROCK.Size.Z / 5)
-                            ApplyAoE_Global(ROCK.Position, dano, 12, true)
                             Debree({Delay = 0.8, Variant = "Loose", Location = ROCK.Position, Color = ROCK.Color,
                                 Size = ROCK.Size.Z/3, Distance = 75, Material = ROCK.Material, Scatter = 35,
                                 Amount = MRANDOM(75,85), DebreeCount = 8})
@@ -1346,14 +1151,47 @@ local Kill = function()
         end
     end
 
-    ApplyAoE_Global(ROOT.Position, 9e9, 0, false)
-    pcall(function() hum.MaxHealth = 0 end)
-    pcall(function() hum.Health = 0 end)
-    pcall(function() FOE:BreakJoints() end)
+    -- Esconde vitima por 5s (sem matar)
+    local partesGuardadas = {}
+    for _, part in ipairs(FOE:GetDescendants()) do
+        if part:IsA("BasePart") then
+            table.insert(partesGuardadas, { part = part, transparency = part.Transparency })
+            part.Transparency = 1
+        end
+        if part:IsA("Decal") or part:IsA("Texture") then
+            table.insert(partesGuardadas, { part = part, transparency = part.Transparency })
+            part.Transparency = 1
+        end
+    end
+    local nomeOrig, vidaOrig
+    if hum then
+        nomeOrig = hum.NameDisplayDistance
+        vidaOrig = hum.HealthDisplayDistance
+        pcall(function() hum.NameDisplayDistance = 0 end)
+        pcall(function() hum.HealthDisplayDistance = 0 end)
+    end
+
+    task.spawn(function()
+        task.wait(5)
+        for _, entry in ipairs(partesGuardadas) do
+            if entry.part and entry.part.Parent then
+                pcall(function() entry.part.Transparency = entry.transparency end)
+            end
+        end
+        if hum and hum.Parent then
+            pcall(function()
+                if nomeOrig then hum.NameDisplayDistance = nomeOrig end
+                if vidaOrig then hum.HealthDisplayDistance = vidaOrig end
+            end)
+        end
+    end)
+
+    ATTACK = false
+    Rooted = false
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [21] UI DE SKILLS (centro-direito + 1.5x)
+-- UI DE SKILLS (centro-direito + 1.5x)
 -- ═══════════════════════════════════════════════════════════════════════
 local WEAPONGUI = IT("ScreenGui", PlayerGui)
 WEAPONGUI.Name = "Weapon GUI"
@@ -1363,11 +1201,9 @@ local COLOR      = C3(1,1,1)
 local SKILLFONT  = "Legacy"
 local SIZE       = 2.5 * 1.5
 local MOUSE      = 2097542191
-local MELEE      = 2097543015
 local BODY       = 2097543382
 local PROJECTILE = 2097544084
 local AOE        = 2097544884
-local ULTIMATE   = 2097545381
 
 local ATTACKS = {
     {"Switch ScreenBehaviour", "m"},
@@ -1427,15 +1263,20 @@ for _, entry in ipairs(SkillFrames) do
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [22] BINDS DE TECLADO (PC)
+-- BINDS PC
 -- ═══════════════════════════════════════════════════════════════════════
 local ultimoSkill = 0
 GuardarConexao(UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
-    KEYHOLD = true
     local k = input.KeyCode
     if k == Enum.KeyCode.M then SC = not SC end
+    if k == Enum.KeyCode.G then
+        Config.GodModeAtivo = not Config.GodModeAtivo
+    end
+    if k == Enum.KeyCode.Space and Soundtrack then
+        if Soundtrack.IsPlaying then Soundtrack:Stop() else Soundtrack:Play() end
+    end
     if ATTACK then return end
     if tick() - ultimoSkill < 0.3 then return end
     ultimoSkill = tick()
@@ -1443,14 +1284,11 @@ GuardarConexao(UserInputService.InputBegan:Connect(function(input, gp)
     elseif k == Enum.KeyCode.X then TpTo()
     elseif k == Enum.KeyCode.C then Hurl()
     elseif k == Enum.KeyCode.V then Kill()
-    elseif k == Enum.KeyCode.G then Config.GodModeAtivo = not Config.GodModeAtivo
-    elseif k == Enum.KeyCode.Space and Soundtrack then
-        if Soundtrack.IsPlaying then Soundtrack:Stop() else Soundtrack:Play() end
     end
 end))
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [23] LOOP PRINCIPAL DE ANIMACAO
+-- LOOP PRINCIPAL (com FIX de animacao: AssemblyLinearVelocity)
 -- ═══════════════════════════════════════════════════════════════════════
 GuardarConexao(task.spawn(function()
     while ScriptAtivo do
@@ -1467,12 +1305,15 @@ GuardarConexao(task.spawn(function()
         end
 
         pcall(function()
-            local TORSO_VEL = (RootPart.Velocity * VT(1,0,1)).Magnitude
-            local TORSO_Y   = RootPart.Velocity.Y
+            -- FIX: AssemblyLinearVelocity (Velocity foi deprecado)
+            local vel = RootPart.AssemblyLinearVelocity
+            local TORSO_VEL = (Vector3.new(vel.X, 0, vel.Z)).Magnitude
+            local TORSO_Y   = vel.Y
             local HITFLOOR  = Raycast(RootPart.Position,
                 (CF(RootPart.Position, RootPart.Position + VT(0,-1,0))).lookVector, 4, Character)
             local WSV = 8 / (Humanoid.WalkSpeed / 16)
 
+            -- C1 do Walk
             if ANIM == "Walk" and TORSO_VEL > 1 and RootJoint and Neck and RightHip and LeftHip then
                 RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0.1*COS(SINE/(WSV/2))) * ANGLES(RAD(0),RAD(0),RAD(0)), 2*(Humanoid.WalkSpeed/16)/Animation_Speed)
                 Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed)
@@ -1485,15 +1326,20 @@ GuardarConexao(task.spawn(function()
                 if LeftHip then LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,1,0) * ANGLES(RAD(0),RAD(-90),RAD(0)), 0.7/Animation_Speed) end
             end
 
+            -- Detecta estado
             if ATTACK == false then
                 if TORSO_Y > 1 and HITFLOOR == nil then
                     ANIM = "Jump"
                     if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(-5),RAD(0),RAD(0)), 1/Animation_Speed) end
                     if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(-25),RAD(0),RAD(0)), 1/Animation_Speed) end
+                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(25+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(-25-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
                 elseif TORSO_Y < -1 and HITFLOOR == nil then
                     ANIM = "Fall"
                     if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
                     if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
+                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(45+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(-45-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
                 elseif TORSO_VEL < 1 and HITFLOOR ~= nil then
                     ANIM = "Idle"
                     if MRANDOM(1,650) == 1 and LITTLEIDLE == false and GLASSESWLD then
@@ -1577,6 +1423,7 @@ GuardarConexao(task.spawn(function()
                 end
             end
 
+            -- HUD antivirus fake
             if #GUISTEXT > 0 then
                 local dt = workspace.DistributedGameTime
                 local S = math.floor(dt) % 60
@@ -1591,45 +1438,13 @@ GuardarConexao(task.spawn(function()
                     elseif E == 5 then TXT.Text = "SERVER VERSION = ["..game.PlaceVersion.."]"
                     end
                 end
-                if MRANDOM(1,125) == 1 then
-                    for E = 1, #GUISTEXT do
-                        local TXT = GUISTEXT[E]
-                        if E > 5 and E <= 15 then
-                            if MRANDOM(1,3) == 1 then
-                                local objs = workspace:GetChildren()
-                                local alvo = objs[MRANDOM(1, #objs)]
-                                if alvo then
-                                    TXT.Text = ">>MONITORING; ["..alvo.Name.."]..."
-                                    local MAL = {"BlurEffect","BloomEffect","Fire","ParticleEmitter","Smoke"}
-                                    for _, m in ipairs(MAL) do
-                                        if alvo:FindFirstChildOfClass(m) then
-                                            TXT.Text = ">>!FOUND MALICIOUS CONTENT IN ["..alvo.Name.."]; FOUND: ["..m.."]"
-                                            TXT.TextColor3 = C3(1,0,0)
-                                            break
-                                        else
-                                            TXT.TextColor3 = C3(1,1,1)
-                                        end
-                                    end
-                                end
-                            end
-                        elseif E > 15 then
-                            local pls = Players:GetPlayers()
-                            local N = E - 15
-                            if N <= #pls then
-                                TXT.Text = ">>MONITORING USER; ["..pls[N].Name.."]..."
-                            else
-                                TXT.Text = ""
-                            end
-                        end
-                    end
-                end
             end
         end)
     end
 end))
 
 -- ═══════════════════════════════════════════════════════════════════════
--- [24] INICIAR INTRO + PRINTS FINAIS
+-- INICIAR INTRO + PRINTS
 -- ═══════════════════════════════════════════════════════════════════════
 task.wait(3)
 if not INTRO and Character and Character.Parent and Humanoid and Humanoid.Health > 0 then
@@ -1637,11 +1452,7 @@ if not INTRO and Character and Character.Parent and Humanoid and Humanoid.Health
 end
 
 print("[SP3CT4T0R_0] =====================================")
-print("[SP3CT4T0R_0] Script carregado! ("..Config.Nick.." - "..Config.Comentario..")")
-print("[SP3CT4T0R_0] God Mode: "..(Config.GodModeAtivo and "ON" or "OFF"))
-print("[SP3CT4T0R_0] SimRadius: "..(Config.UseSimRadius and "ATIVO" or "OFF"))
-print("[SP3CT4T0R_0] Netless: "..(Config.UseNetless and "ATIVO" or "OFF"))
-print("[SP3CT4T0R_0] Scanner: "..#RemotesEncontrados.DANO.." DANO | "..#RemotesEncontrados.ANIMACAO.." ANIM | "..#RemotesEncontrados.EFEITO.." FX | "..#RemotesEncontrados.FISICA.." FIS")
-print("[SP3CT4T0R_0] Crosshair 3/4 + UI centro-direito 1.5x + Auto-destruicao ON")
+print("[SP3CT4T0R_0] Script carregado! ("..Config.Nick..")")
+print("[SP3CT4T0R_0] God Mode: ON | Anti-Fling: ON")
 print("[SP3CT4T0R_0] Controles: Z=Fling | X=TpTo | C=Hurl | V=Kill | M=SC | G=God")
 print("[SP3CT4T0R_0] =====================================")
