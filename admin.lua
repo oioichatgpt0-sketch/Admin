@@ -1,6 +1,6 @@
 --[[
 ╔════════════════════════════════════════════════════════════════════════╗
-║  SP3CT4T0R_0 ADMIN - VERSAO LIMPA (só o que funciona)                  ║
+║  SP3CT4T0R_0 ADMIN - VERSAO FINAL (COMPLETA)                           ║
 ║  God + Anti-Fling + R15->R6 + Crosshair + Intro + Skills visuais       ║
 ╚════════════════════════════════════════════════════════════════════════╝
 --]]
@@ -84,6 +84,14 @@ local ROOTC0          = CF(0, 0, 0) * ANGLES(RAD(-90), RAD(0), RAD(180))
 local NECKC0          = CF(0, 1, 0) * ANGLES(RAD(-90), RAD(0), RAD(180))
 local RIGHTSHOULDERC0 = CF(-0.5, 0, 0) * ANGLES(RAD(0), RAD(90), RAD(0))
 local LEFTSHOULDERC0  = CF(0.5, 0, 0) * ANGLES(RAD(0), RAD(-90), RAD(0))
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- HELPER: Guardar conexoes (era o bug principal!)
+-- ═══════════════════════════════════════════════════════════════════════
+local function GuardarConexao(con)
+    table.insert(Conexoes, con)
+    return con
+end
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- REFERENCIAS
@@ -747,10 +755,6 @@ local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
                     Swait()
                     if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0-0.04*COS(SINE/24), 0, 0+0.05*COS(SINE/12)) * ANGLES(RAD(0), RAD(0-2.5*COS(SINE/24)), RAD(0)), 1/Animation_Speed) end
                     if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15-7*COS(SINE/12)), RAD(0), RAD(0)), 1/Animation_Speed) end
-                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.3,0.45+0.1*COS(SINE/12),-0.2) * ANGLES(RAD(45),RAD(0),RAD(-15)) * ANGLES(RAD(0),RAD(15),RAD(0)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-44-1.5*COS(SINE/12)),RAD(0),RAD(45)) * ANGLES(RAD(0),RAD(-25),RAD(0)) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                    if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1+0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(85),RAD(0)) * ANGLES(RAD(-2-2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1-0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(-85),RAD(0)) * ANGLES(RAD(-2+2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
                 end
             elseif WaitTillFinished == true then
                 repeat
@@ -774,13 +778,12 @@ local function Screening(Text, FinishesMoveEnd, WaitTillFinished)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- INTRO (com fix de oculos: 0.6 studs a frente da cabeca)
+-- INTRO (FIX oculos: 0.35 studs a frente)
 -- ═══════════════════════════════════════════════════════════════════════
 local function IntroThing()
     ATTACK = true
     Rooted = true
 
-    -- Personagem invisivel + ancora + voa
     local partesParaRestaurar = {}
     if Character then
         for _, part in ipairs(Character:GetDescendants()) do
@@ -864,7 +867,7 @@ local function IntroThing()
                 if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(45),RAD(0),RAD(-45)), 1/Animation_Speed) end
             end
 
-            -- ═══ FIX: Oculos 0.6 studs a frente da cabeca (nao entra mais) ═══
+            -- ═══ FIX: Oculos a 0.35 studs a frente ═══
             local GLASSES = CreatePart(3, Character, "Fabric", 0, 0, BRICKC("Pearl"), "Glasses", VT(0,0,0), false)
             CreateMesh("SpecialMesh", GLASSES, "FileMesh", "1577360", "1577349", VT(1,1.3,1), VT(0,0,0))
             local HELDWELD = CreateWeldOrSnapOrMotor("Weld", RightArm, RightArm, GLASSES, CF(0,-1.4,0) * ANGLES(RAD(90),RAD(0),RAD(180)), CF(0,0,0))
@@ -878,8 +881,7 @@ local function IntroThing()
 
             HELDWELD.Part0 = Head
             HELDWELD.Parent = Head
-            -- FIX: -0.6 (a frente), 0.05 (levemente acima)
-            HELDWELD.C0 = CF(0, 0.05, -0.3)
+            HELDWELD.C0 = CF(0, 0.05, -0.35)
             HELDWELD.C1 = CF(0,0,0)
 
             for i = 1, 3 do
@@ -943,7 +945,7 @@ local function IntroThing()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- SKILLS (visuais)
+-- SKILLS
 -- ═══════════════════════════════════════════════════════════════════════
 local Fling = function()
     ATTACK = true
@@ -1062,11 +1064,6 @@ local Hurl = function()
             if GYRO then GYRO:Destroy() end
         end)
 
-        local THROWING = true
-        task.spawn(function()
-            repeat Swait() until THROWING == false
-        end)
-
         for E = 1, #ROCKS do
             task.wait(0.05)
             local ROCK = ROCKS[E]
@@ -1098,7 +1095,6 @@ local Hurl = function()
             end)
             task.wait(0.05)
         end
-        THROWING = false
     end
 
     task.spawn(function()
@@ -1146,7 +1142,7 @@ local Kill = function()
         end
     end
 
-    -- Esconde vitima por 5s (sem matar)
+    -- Esconde vitima por 5s
     local partesGuardadas = {}
     for _, part in ipairs(FOE:GetDescendants()) do
         if part:IsA("BasePart") then
@@ -1186,7 +1182,7 @@ local Kill = function()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════
--- UI DE SKILLS (centro-direito + 1.5x)
+-- UI DE SKILLS
 -- ═══════════════════════════════════════════════════════════════════════
 local WEAPONGUI = IT("ScreenGui", PlayerGui)
 WEAPONGUI.Name = "Weapon GUI"
@@ -1283,160 +1279,167 @@ GuardarConexao(UserInputService.InputBegan:Connect(function(input, gp)
 end))
 
 -- ═══════════════════════════════════════════════════════════════════════
--- LOOP PRINCIPAL (com FIX de animacao: AssemblyLinearVelocity)
+-- LOOP PRINCIPAL (com FIX: FloorMaterial + MoveDirection)
 -- ═══════════════════════════════════════════════════════════════════════
-GuardarConexao(task.spawn(function()
+task.spawn(function()
     while ScriptAtivo do
         Swait()
         SINE = SINE + CHANGE
+
         if not Character or not Character.Parent or not Humanoid or Humanoid.Health <= 0 then
             task.wait(0.5)
-            continue
-        end
-
-        if ANIMATE and ANIMATE.Parent then ANIMATE.Parent = nil end
-        if ANIMATOR then
-            for _, v in next, Humanoid:GetPlayingAnimationTracks() do v:Stop() end
-        end
-
-        pcall(function()
-            -- FIX: AssemblyLinearVelocity (Velocity foi deprecado)
-            local vel = RootPart.AssemblyLinearVelocity
-            local TORSO_VEL = (Vector3.new(vel.X, 0, vel.Z)).Magnitude
-            local TORSO_Y   = vel.Y
-            local HITFLOOR  = Raycast(RootPart.Position,
-                (CF(RootPart.Position, RootPart.Position + VT(0,-1,0))).lookVector, 4, Character)
-            local WSV = 8 / (Humanoid.WalkSpeed / 16)
-
-            -- C1 do Walk
-            if ANIM == "Walk" and TORSO_VEL > 1 and RootJoint and Neck and RightHip and LeftHip then
-                RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0.1*COS(SINE/(WSV/2))) * ANGLES(RAD(0),RAD(0),RAD(0)), 2*(Humanoid.WalkSpeed/16)/Animation_Speed)
-                Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed)
-                RightHip.C1 = Clerp(RightHip.C1, CF(0.5,0.875-0.125*SIN(SINE/WSV)-0.15*COS(SINE/WSV*2),0.25*SIN(SINE/WSV)) * ANGLES(RAD(0),RAD(90),RAD(0)) * ANGLES(RAD(0),RAD(0),RAD(10+50*COS(SINE/WSV))), 0.6/Animation_Speed)
-                LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,0.875+0.125*SIN(SINE/WSV)-0.15*COS(SINE/WSV*2),-0.25*SIN(SINE/WSV)) * ANGLES(RAD(0),RAD(-90),RAD(0)) * ANGLES(RAD(0),RAD(0),RAD(-10+50*COS(SINE/WSV))), 0.6/Animation_Speed)
-            else
-                if RootJoint then RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0), 0.2/Animation_Speed) end
-                if Neck then Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed) end
-                if RightHip then RightHip.C1 = Clerp(RightHip.C1, CF(0.5,1,0) * ANGLES(RAD(0),RAD(90),RAD(0)), 0.7/Animation_Speed) end
-                if LeftHip then LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,1,0) * ANGLES(RAD(0),RAD(-90),RAD(0)), 0.7/Animation_Speed) end
+        else
+            if ANIMATE and ANIMATE.Parent then ANIMATE.Parent = nil end
+            if ANIMATOR then
+                for _, v in next, Humanoid:GetPlayingAnimationTracks() do v:Stop() end
             end
 
-            -- Detecta estado
-            if ATTACK == false then
-                if TORSO_Y > 1 and HITFLOOR == nil then
-                    ANIM = "Jump"
-                    if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(-5),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(-25),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(25+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(-25-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                elseif TORSO_Y < -1 and HITFLOOR == nil then
-                    ANIM = "Fall"
-                    if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(45+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(-45-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                elseif TORSO_VEL < 1 and HITFLOOR ~= nil then
-                    ANIM = "Idle"
-                    if MRANDOM(1,650) == 1 and LITTLEIDLE == false and GLASSESWLD then
-                        LITTLEIDLE = true
-                        task.spawn(function() task.wait(3); LITTLEIDLE = false end)
-                    end
-                    if not LITTLEIDLE then
-                        if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0-0.04*COS(SINE/24),0,0+0.05*COS(SINE/12)) * ANGLES(RAD(0),RAD(0-2.5*COS(SINE/24)),RAD(0)), 1/Animation_Speed) end
-                        if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(3-7*COS(SINE/12)),RAD(0),RAD(0)), 1/Animation_Speed) end
-                        if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-45-1.5*COS(SINE/12)),RAD(0),RAD(-45)) * ANGLES(RAD(0),RAD(25),RAD(0)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                        if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-44-1.5*COS(SINE/12)),RAD(0),RAD(45)) * ANGLES(RAD(0),RAD(-25),RAD(0)) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                        if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1+0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(85),RAD(0)) * ANGLES(RAD(-2-2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
-                        if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1-0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(-85),RAD(0)) * ANGLES(RAD(-2+2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
-                    end
-                elseif TORSO_VEL > 1 and HITFLOOR ~= nil then
-                    ANIM = "Walk"
-                    if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,-0.05) * ANGLES(RAD(5),RAD(0),RAD(-7*COS(SINE/WSV))), 1/Animation_Speed) end
-                    if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(5-1*SIN(SINE/(WSV/2))),RAD(0),RAD(7*COS(SINE/WSV))), 1/Animation_Speed) end
-                    if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(60*COS(SINE/WSV)),RAD(-5),RAD(5)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
-                    if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(-60*COS(SINE/WSV)),RAD(5),RAD(-5)) * LEFTSHOULDERC0, 1/Animation_Speed) end
-                    if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1,0) * ANGLES(RAD(0),RAD(85),RAD(0)), 2/Animation_Speed) end
-                    if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1,0) * ANGLES(RAD(0),RAD(-85),RAD(0)), 2/Animation_Speed) end
+            pcall(function()
+                -- FIX animação: usa FloorMaterial + MoveDirection (robusto)
+                local onGround = (Humanoid.FloorMaterial ~= Enum.Material.Air)
+                local isMoving = (Humanoid.MoveDirection.Magnitude > 0.1)
+                local velY = RootPart.Velocity.Y
+                if velY == 0 then
+                    pcall(function() velY = RootPart.AssemblyLinearVelocity.Y end)
                 end
-            end
 
-            for _, c in pairs(Character:GetChildren()) do
-                if c:IsA("BasePart") and c ~= RootPart then c.Anchored = false end
-            end
-            if RootPart then RootPart.Anchored = false end
+                local WSV = 8
+                if Humanoid.WalkSpeed > 0 then
+                    WSV = 128 / Humanoid.WalkSpeed
+                end
 
-            if Rooted then Humanoid.WalkSpeed = 0
-            else Humanoid.WalkSpeed = Speed end
+                -- C1
+                if ANIM == "Walk" and isMoving and RootJoint and Neck and RightHip and LeftHip then
+                    RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0.1*COS(SINE/(WSV/2))) * ANGLES(RAD(0),RAD(0),RAD(0)), 2/Animation_Speed)
+                    Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed)
+                    RightHip.C1 = Clerp(RightHip.C1, CF(0.5,0.875-0.125*SIN(SINE/WSV)-0.15*COS(SINE/WSV*2),0.25*SIN(SINE/WSV)) * ANGLES(RAD(0),RAD(90),RAD(0)) * ANGLES(RAD(0),RAD(0),RAD(10+50*COS(SINE/WSV))), 0.6/Animation_Speed)
+                    LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,0.875+0.125*SIN(SINE/WSV)-0.15*COS(SINE/WSV*2),-0.25*SIN(SINE/WSV)) * ANGLES(RAD(0),RAD(-90),RAD(0)) * ANGLES(RAD(0),RAD(0),RAD(-10+50*COS(SINE/WSV))), 0.6/Animation_Speed)
+                else
+                    if RootJoint then RootJoint.C1 = Clerp(RootJoint.C1, ROOTC0 * CF(0,0,0), 0.2/Animation_Speed) end
+                    if Neck then Neck.C1 = Clerp(Neck.C1, CF(0,-0.5,0) * ANGLES(RAD(-90),RAD(0),RAD(180)), 0.2/Animation_Speed) end
+                    if RightHip then RightHip.C1 = Clerp(RightHip.C1, CF(0.5,1,0) * ANGLES(RAD(0),RAD(90),RAD(0)), 0.7/Animation_Speed) end
+                    if LeftHip then LeftHip.C1 = Clerp(LeftHip.C1, CF(-0.5,1,0) * ANGLES(RAD(0),RAD(-90),RAD(0)), 0.7/Animation_Speed) end
+                end
 
-            if Head and Head:FindFirstChild("face") then
-                Head.face.Texture = "rbxassetid://62682458"
-            end
-
-            if INTRO == false and ATTACK == false then
-                INTRO = true
-                task.spawn(IntroThing)
-            end
-
-            if #SCREENWELDS > 0 then
-                if SC == true then
-                    if MRANDOM(1,75) == 1 and not MOVINGSCREENS then
-                        MOVINGSCREENS = true
-                        task.wait(1)
-                        MOVINGSCREENS = false
-                        for E = 1, #SCREENWELDS do
-                            task.spawn(function()
-                                local M1 = MRANDOM(-25,25)/10+1
-                                local M2 = MRANDOM(-45,45)
-                                for i = 1, 55 do
-                                    Swait()
-                                    if SCREENWELDS[E] and SCREENWELDS[E].Parent then
-                                        SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,M1,0) * ANGLES(RAD(0),RAD(M2+180),RAD(0)) * CF(0,0,3+(E/1.5)), 0.1)
-                                    end
-                                end
-                            end)
+                -- C0
+                if ATTACK == false then
+                    if not onGround then
+                        if velY > 1 then
+                            ANIM = "Jump"
+                            if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(-5),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(-25),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(25+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                            if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(-35),RAD(0),RAD(-25-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
+                        else
+                            ANIM = "Fall"
+                            if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(15),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(45+10*COS(SINE/12))) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                            if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(35-4*COS(SINE/6)),RAD(0),RAD(-45-10*COS(SINE/12))) * LEFTSHOULDERC0, 1/Animation_Speed) end
+                        end
+                    elseif isMoving then
+                        ANIM = "Walk"
+                        if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0,0,-0.05) * ANGLES(RAD(5),RAD(0),RAD(-7*COS(SINE/WSV))), 1/Animation_Speed) end
+                        if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(5-1*SIN(SINE/(WSV/2))),RAD(0),RAD(7*COS(SINE/WSV))), 1/Animation_Speed) end
+                        if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.5,0.5,0) * ANGLES(RAD(60*COS(SINE/WSV)),RAD(-5),RAD(5)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                        if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.5,0.5,0) * ANGLES(RAD(-60*COS(SINE/WSV)),RAD(5),RAD(-5)) * LEFTSHOULDERC0, 1/Animation_Speed) end
+                        if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1,0) * ANGLES(RAD(0),RAD(85),RAD(0)), 2/Animation_Speed) end
+                        if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1,0) * ANGLES(RAD(0),RAD(-85),RAD(0)), 2/Animation_Speed) end
+                    else
+                        ANIM = "Idle"
+                        if MRANDOM(1,650) == 1 and LITTLEIDLE == false and GLASSESWLD then
+                            LITTLEIDLE = true
+                            task.spawn(function() task.wait(3); LITTLEIDLE = false end)
+                        end
+                        if not LITTLEIDLE then
+                            if RootJoint then RootJoint.C0 = Clerp(RootJoint.C0, ROOTC0 * CF(0-0.04*COS(SINE/24),0,0+0.05*COS(SINE/12)) * ANGLES(RAD(0),RAD(0-2.5*COS(SINE/24)),RAD(0)), 1/Animation_Speed) end
+                            if Neck then Neck.C0 = Clerp(Neck.C0, NECKC0 * CF(0,0,0) * ANGLES(RAD(3-7*COS(SINE/12)),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if RightShoulder then RightShoulder.C0 = Clerp(RightShoulder.C0, CF(1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-45-1.5*COS(SINE/12)),RAD(0),RAD(-45)) * ANGLES(RAD(0),RAD(25),RAD(0)) * RIGHTSHOULDERC0, 1/Animation_Speed) end
+                            if LeftShoulder then LeftShoulder.C0 = Clerp(LeftShoulder.C0, CF(-1.1,0.35+0.1*COS(SINE/12),0.2) * ANGLES(RAD(-44-1.5*COS(SINE/12)),RAD(0),RAD(45)) * ANGLES(RAD(0),RAD(-25),RAD(0)) * LEFTSHOULDERC0, 1/Animation_Speed) end
+                            if RightHip then RightHip.C0 = Clerp(RightHip.C0, CF(1,-1+0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(85),RAD(0)) * ANGLES(RAD(-2-2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
+                            if LeftHip then LeftHip.C0 = Clerp(LeftHip.C0, CF(-1,-1-0.035*COS(SINE/24)-0.05*COS(SINE/12),0) * ANGLES(RAD(0),RAD(-85),RAD(0)) * ANGLES(RAD(-2+2.5*COS(SINE/24)),RAD(0),RAD(0)), 1/Animation_Speed) end
                         end
                     end
-                else
-                    for E = 1, #SCREENWELDS do
-                        if SCREENWELDS[E] and SCREENWELDS[E].Parent then
-                            if E == 1 then
-                                SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,-1+0.05*COS(SINE/12),0)*ANGLES(RAD(0),RAD(-40+180),RAD(0))*CF(0,0,3.4), 0.1)
-                            elseif E == 2 then
-                                SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,-1+0.05*SIN(SINE/12),0)*ANGLES(RAD(0),RAD(40+180),RAD(0))*CF(0,0,3.4), 0.1)
-                            elseif E == 3 then
-                                SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,1.3+0.05*SIN(SINE/12),0)*ANGLES(RAD(0),RAD(-38+180),RAD(0))*CF(0,0,3.4), 0.1)
-                            elseif E == 4 then
-                                SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,1.3+0.05*COS(SINE/12),0)*ANGLES(RAD(0),RAD(38+180),RAD(0))*CF(0,0,3.4), 0.1)
+                end
+
+                -- Desancora + walkspeed
+                for _, c in pairs(Character:GetChildren()) do
+                    if c:IsA("BasePart") and c ~= RootPart then c.Anchored = false end
+                end
+                if RootPart then RootPart.Anchored = false end
+
+                if Rooted then Humanoid.WalkSpeed = 0
+                else Humanoid.WalkSpeed = Speed end
+
+                if Head and Head:FindFirstChild("face") then
+                    Head.face.Texture = "rbxassetid://62682458"
+                end
+
+                if INTRO == false and ATTACK == false then
+                    INTRO = true
+                    task.spawn(IntroThing)
+                end
+
+                if #SCREENWELDS > 0 then
+                    if SC == true then
+                        if MRANDOM(1,75) == 1 and not MOVINGSCREENS then
+                            MOVINGSCREENS = true
+                            task.wait(1)
+                            MOVINGSCREENS = false
+                            for E = 1, #SCREENWELDS do
+                                task.spawn(function()
+                                    local M1 = MRANDOM(-25,25)/10+1
+                                    local M2 = MRANDOM(-45,45)
+                                    for i = 1, 55 do
+                                        Swait()
+                                        if SCREENWELDS[E] and SCREENWELDS[E].Parent then
+                                            SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,M1,0) * ANGLES(RAD(0),RAD(M2+180),RAD(0)) * CF(0,0,3+(E/1.5)), 0.1)
+                                        end
+                                    end
+                                end)
+                            end
+                        end
+                    else
+                        for E = 1, #SCREENWELDS do
+                            if SCREENWELDS[E] and SCREENWELDS[E].Parent then
+                                if E == 1 then
+                                    SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,-1+0.05*COS(SINE/12),0)*ANGLES(RAD(0),RAD(-40+180),RAD(0))*CF(0,0,3.4), 0.1)
+                                elseif E == 2 then
+                                    SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,-1+0.05*SIN(SINE/12),0)*ANGLES(RAD(0),RAD(40+180),RAD(0))*CF(0,0,3.4), 0.1)
+                                elseif E == 3 then
+                                    SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,1.3+0.05*SIN(SINE/12),0)*ANGLES(RAD(0),RAD(-38+180),RAD(0))*CF(0,0,3.4), 0.1)
+                                elseif E == 4 then
+                                    SCREENWELDS[E].C0 = Clerp(SCREENWELDS[E].C0, CF(0,1.3+0.05*COS(SINE/12),0)*ANGLES(RAD(0),RAD(38+180),RAD(0))*CF(0,0,3.4), 0.1)
+                                end
                             end
                         end
                     end
-                end
-                for E = 1, #SCREENS do
-                    if SCREENS[E] and SCREENS[E].Parent then
-                        SCREENS[E].Transparency = MRANDOM(90,99)/100
+                    for E = 1, #SCREENS do
+                        if SCREENS[E] and SCREENS[E].Parent then
+                            SCREENS[E].Transparency = MRANDOM(90,99)/100
+                        end
                     end
                 end
-            end
 
-            -- HUD antivirus fake
-            if #GUISTEXT > 0 then
-                local dt = workspace.DistributedGameTime
-                local S = math.floor(dt) % 60
-                local M = math.floor(dt/60) % 60
-                local H = math.floor(dt/3600)
-                for E = 1, #GUISTEXT do
-                    local TXT = GUISTEXT[E]
-                    if E == 1 then TXT.Text = "SERVER STATS;"
-                    elseif E == 2 then TXT.Text = "SERVER TIME = ["..S..":"..M..":"..H.."]"
-                    elseif E == 3 then TXT.Text = "WORKSPACE GRAVITY = ["..workspace.Gravity.."]"
-                    elseif E == 4 then TXT.Text = "SERVER JOBID = ["..game.JobId.."]"
-                    elseif E == 5 then TXT.Text = "SERVER VERSION = ["..game.PlaceVersion.."]"
+                if #GUISTEXT > 0 then
+                    local dt = workspace.DistributedGameTime
+                    local S = math.floor(dt) % 60
+                    local M = math.floor(dt/60) % 60
+                    local H = math.floor(dt/3600)
+                    for E = 1, #GUISTEXT do
+                        local TXT = GUISTEXT[E]
+                        if E == 1 then TXT.Text = "SERVER STATS;"
+                        elseif E == 2 then TXT.Text = "SERVER TIME = ["..S..":"..M..":"..H.."]"
+                        elseif E == 3 then TXT.Text = "WORKSPACE GRAVITY = ["..workspace.Gravity.."]"
+                        elseif E == 4 then TXT.Text = "SERVER JOBID = ["..game.JobId.."]"
+                        elseif E == 5 then TXT.Text = "SERVER VERSION = ["..game.PlaceVersion.."]"
+                        end
                     end
                 end
-            end
-        end)
+            end)
+        end
     end
-end))
+end)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- INICIAR INTRO + PRINTS
