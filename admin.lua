@@ -881,7 +881,7 @@ local function IntroThing()
 
             HELDWELD.Part0 = Head
             HELDWELD.Parent = Head
-            HELDWELD.C0 = CF(0, 0.15, -0.15)
+            HELDWELD.C0 = CF(0, 0, 0)
             HELDWELD.C1 = CF(0,0,0)
 
             for i = 1, 3 do
