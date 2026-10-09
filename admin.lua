@@ -3,7 +3,6 @@
 ║  SP3CT4T0R_0 ADMIN SCRIPT                                              ║
 ║  Autor: SP3CT4T0R_0 | Imagem: rbxassetid://9779422 | Have fun lol      ║
 ║  Original: Shackluster | Ref2: ilikeices                               ║
-║  R6 + R15 + Netless + SimRadius + Crosshair 3/4 + Scanner JJS (101)    ║
 ╚════════════════════════════════════════════════════════════════════════╝
 --]]
 
