@@ -1443,7 +1443,7 @@ GuardarConexao(UserInputService.InputBegan:Connect(function(input, gp)
     elseif k == Enum.KeyCode.X then TpTo()
     elseif k == Enum.KeyCode.C then Hurl()
     elseif k == Enum.KeyCode.V then Kill()
-    elseif k == Enum.KeyCode.G then Config.GodModeAtivo = not Config.GodModeAtivo end
+    elseif k == Enum.KeyCode.G then Config.GodModeAtivo = not Config.GodModeAtivo
     elseif k == Enum.KeyCode.Space and Soundtrack then
         if Soundtrack.IsPlaying then Soundtrack:Stop() else Soundtrack:Play() end
     end
